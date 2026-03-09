@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vehicle Summary</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+    .summary-card {
+        border-radius: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+
+    .summary-card .card-header {
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+    .table-sm td, .table-sm th {
+        font-size: 13px;
+    }
+
+    .vehicle-header {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+
+	/* ===== ALL SUMMARY PANEL HEADERS GREEN ===== */
+	.summary-card .card-header {
+    	background-color: #198754 !important;
+    	color: white !important;
+    	font-weight: 600;
+    	font-size: 15px;
+    }
+
+    </style>
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+<!-- ================= HEADER ================= -->
+
+<div class="vehicle-header text-center">
+
+    <h2 class="text-success mb-1">Vehicle Full Summary</h2>
+    <h3 class="mb-2">{{ vehicle_no }}</h3>,
+
+    <a href="/vehicles" class="btn btn-secondary btn-sm">
+        ← Back to Vehicle Grid
+    </a>
+
+</div>
+
+
+<div class="row">
+
+<!-- ================= BASIC ================= -->
+
+<div class="col-md-12">
+<div class="card summary-card">
+
+<div class="card-header">
+Basic Details
+</div>
+
+<div class="card-body">
+
+<div class="row">
+    <div class="col-md-6">
+        
+<img src="{{ url_for('static', filename=vehicle_image) }}"
+     class="img-fluid rounded shadow"
+     style="width:100%; max-height:360px; object-fit:cover;">
+    </div>
+    <div class="col-md-6">
+
+{% if basic and basic|length > 0 %}
+<table class="table table-bordered table-sm">
+{% for k,v in basic[0].items() %}
+<tr>
+<th width="40%">{{ k }}</th>
+<td>
+{% if v is string and ':' in v %}
+    {{ v.split(' ')[0] }}
+{% else %}
+    {{ v }}
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+No basic data found
+{% endif %}
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- ================= REPAIR ================= -->
+
+<div class="col-md-6">
+<div class="card summary-card">
+<div class="card-header">Repair — Latest 10</div>
+<div class="card-body table-responsive">
+
+{% if repair and repair|length > 0 %}
+<table class="table table-striped table-hover table-bordered table-sm">
+<tr>
+{% for c in repair[0].keys() %}
+<th>{{ c }}</th>
+{% endfor %}
+</tr>
+
+{% for row in repair %}
+<tr>
+{% for v in row.values() %}
+<td class="text-end">
+{% if v is number %}
+    {% if v == v|int %}
+        {{ "{:,}".format(v|int) }}
+    {% else %}
+        {{ "{:,.2f}".format(v) }}
+    {% endif %}
+{% elif v is string and ':' in v %}
+    {{ v.split(' ')[0] }}
+{% else %}
+    {{ v }}
+{% endif %}
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+{% else %}
+No repair records
+{% endif %}
+
+</div>
+</div>
+</div>
+
+
+<!-- ================= SERVICE ================= -->
+
+<div class="col-md-6">
+<div class="card summary-card">
+<div class="card-header">Service — Latest 5</div>
+<div class="card-body table-responsive">
+
+{% if service and service|length > 0 %}
+<table class="table table-striped table-hover table-bordered table-sm">
+<tr>
+{% for c in service[0].keys() %}
+<th>{{ c }}</th>
+{% endfor %}
+</tr>
+
+{% for row in service %}
+<tr>
+{% for v in row.values() %}
+<td class="text-end">
+{% if v is number %}
+    {% if v == v|int %}
+        {{ "{:,}".format(v|int) }}
+    {% else %}
+        {{ "{:,.2f}".format(v) }}
+    {% endif %}
+{% elif v is string and ':' in v %}
+    {{ v.split(' ')[0] }}
+{% else %}
+    {{ v }}
+{% endif %}
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+{% else %}
+No service records
+{% endif %}
+
+</div>
+</div>
+</div>
+
+
+<!-- ================= ADD WORK ================= -->
+
+<div class="col-md-6">
+<div class="card summary-card">
+<div class="card-header">Add Work — Latest 5</div>
+<div class="card-body table-responsive">
+
+{% if add_work and add_work|length > 0 %}
+<table class="table table-striped table-hover table-bordered table-sm">
+<tr>
+{% for c in add_work[0].keys() %}
+<th>{{ c }}</th>
+{% endfor %}
+</tr>
+
+{% for row in add_work %}
+<tr>
+{% for v in row.values() %}
+<td class="text-end">
+{% if v is number %}
+    {{ "{:,.2f}".format(v) }}
+{% elif v is string and ':' in v %}
+    {{ v.split(' ')[0] }}
+{% else %}
+    {{ v }}
+{% endif %}
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+{% else %}
+No add work records
+{% endif %}
+
+</div>
+</div>
+</div>
+
+
+<!-- ================= TYRE ================= -->
+
+<div class="col-md-6">
+<div class="card summary-card">
+<div class="card-header">Tyre — Latest 5</div>
+<div class="card-body table-responsive">
+
+{% if tyre and tyre|length > 0 %}
+<table class="table table-striped table-hover table-bordered table-sm">
+<tr>
+{% for c in tyre[0].keys() %}
+<th>{{ c }}</th>
+{% endfor %}
+</tr>
+
+{% for row in tyre %}
+<tr>
+{% for v in row.values() %}
+<td class="text-end">
+{% if v is number %}
+    {% if v == v|int %}
+        {{ "{:,}".format(v|int) }}
+    {% else %}
+        {{ "{:,.2f}".format(v) }}
+    {% endif %}
+{% elif v is string and ':' in v %}
+    {{ v.split(' ')[0] }}
+{% else %}
+    {{ v }}
+{% endif %}
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+{% else %}
+No tyre records
+{% endif %}
+
+</div>
+</div>
+</div>
+
+
+<!-- ================= PENDING ================= -->
+
+<div class="col-md-6">
+<div class="card summary-card">
+<div class="card-header">Pending Works</div>
+<div class="card-body">
+
+{% if pending and pending|length > 0 %}
+<table class="table table-bordered table-sm">
+{% for k,v in pending[0].items() %}
+<tr><th>{{ k }}</th><td>{{ v }}</td></tr>
+{% endfor %}
+</table>
+{% else %}
+No pending work
+{% endif %}
+
+</div>
+</div>
+</div>
+
+
+<!-- ================= FUEL ================= -->
+
+<div class="col-md-6">
+<div class="card summary-card">
+<div class="card-header">Fuel Summary</div>
+<div class="card-body">
+
+{% if fuel and fuel|length > 0 %}
+<table class="table table-bordered table-sm">
+{% for k,v in fuel[0].items() %}
+<tr><th>{{ k }}</th>
+<td class="text-end">
+{% if v is number %}
+    {{ "{:,.2f}".format(v) }}
+{% elif v is string and ':' in v %}
+    {{ v.split(' ')[0] }}
+{% else %}
+    {{ v }}
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+No fuel data
+{% endif %}
+
+</div>
+</div>
+</div>
+
+
+<!-- ================= REVNUE ================= -->
+
+<div class="col-md-6">
+<div class="card summary-card">
+<div class="card-header">Revenue License</div>
+<div class="card-body">
+
+{% if revnue and revnue|length > 0 %}
+<table class="table table-bordered table-sm">
+{% for k,v in revnue[0].items() %}
+<tr><th>{{ k }}</th><td>{{ v }}</td></tr>
+{% endfor %}
+</table>
+{% else %}
+No revenue data
+{% endif %}
+
+</div>
+</div>
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

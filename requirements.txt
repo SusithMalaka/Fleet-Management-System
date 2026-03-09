@@ -1,0 +1,10 @@
+Flask
+gunicorn
+gspread
+oauth2client
+reportlab
+BytesIO
+check_password_hash
+datetime
+pandas as pd
+os
